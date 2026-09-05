@@ -28,6 +28,11 @@ def fake_model():
     probabilities = [p / total for p in probabilities]
 
     return probabilities
+
+DISEASE_NAME_ALIASES = {
+    "Dimorphic hemmorhoids(piles)": "Dimorphic hemorrhoids(piles)"
+}
+
 def get_top3(probabilities, disease_names, precautions_dict, threshold=45):
 
     results = []
@@ -35,14 +40,16 @@ def get_top3(probabilities, disease_names, precautions_dict, threshold=45):
     for disease, probability in zip(disease_names, probabilities):
 
         confidence = probability * 100
+        clean_name = disease.strip()
+        clean_name = DISEASE_NAME_ALIASES.get(clean_name, clean_name)
 
         results.append({
             "disease": disease,
             "confidence": round(confidence, 2),
-            "precautions": precautions_dict.get(
-                disease,
-                "Please consult a doctor."
-            )
+           "precautions": precautions_dict.get(
+    clean_name,
+    ["Please consult a doctor."]
+)
         })
 
     # Highest confidence first
@@ -95,8 +102,8 @@ if __name__ == "__main__":
 
     if result["consult_doctor"]:
         print("\n⚠️", result["warning"])
-# Deliberately low-confidence test case
-    low_probs = [1 / 41] * 41
+    # Deliberately low-confidence test case 
+        low_probs = [1 / 41] * 41
 
     low_result = get_top3(
         low_probs,
