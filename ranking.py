@@ -95,3 +95,21 @@ if __name__ == "__main__":
 
     if result["consult_doctor"]:
         print("\n⚠️", result["warning"])
+# Deliberately low-confidence test case
+    low_probs = [1 / 41] * 41
+
+    low_result = get_top3(
+        low_probs,
+        disease_names,
+        precautions_dict
+    )
+
+    print("\n===== LOW CONFIDENCE TEST RESULT =====")
+
+    for item in low_result["results"]:
+        print(f"\nDisease: {item['disease']}")
+        print(f"Confidence: {item['confidence']}%")
+        print(f"Precautions: {item['precautions']}")
+
+    if low_result["consult_doctor"]:
+        print("⚠️", low_result["warning"])
